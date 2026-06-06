@@ -1119,7 +1119,11 @@ function faqToggle(btn) {
   if (!open) item.classList.add('open');
 }
 
-function submitCf() {
+// ▼ web3forms.com 에서 wavint@leeh.io 로 발급받은 Access Key 로 교체하세요.
+//   교체 전에는 전송이 실패하고 텔레그램 문의로 안내됩니다.
+const WEB3FORMS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
+
+async function submitCf() {
   const email = document.getElementById('cf-email').value.trim();
   if (!email || !email.includes('@')) {
     document.getElementById('cf-email').style.borderColor = '#c0392b';
@@ -1127,8 +1131,33 @@ function submitCf() {
     setTimeout(() => document.getElementById('cf-email').style.borderColor = '', 2000);
     return;
   }
-  document.getElementById('cfBody').style.display = 'none';
-  document.getElementById('cfSuccess').style.display = 'block';
+  const name = document.getElementById('cf-name').value.trim();
+  const plan = document.getElementById('cf-plan').value;
+  const msg  = document.getElementById('cf-msg').value.trim();
+  const btn  = document.querySelector('.cf-submit');
+  if (btn) { btn.disabled = true; btn.textContent = '보내는 중...'; }
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: 'BidScan 구독/상담 문의',
+        from_name: 'BidScan 랜딩페이지',
+        email: email,
+        이름: name || '(미입력)',
+        관심플랜: plan || '(미선택)',
+        문의내용: msg || '(없음)'
+      })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || '전송 실패');
+    document.getElementById('cfBody').style.display = 'none';
+    document.getElementById('cfSuccess').style.display = 'block';
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = '문의 보내기'; }
+    alert('전송에 실패했습니다. 텔레그램(@bidscanjh_bot)으로 문의해 주시면 빠르게 도와드리겠습니다.');
+  }
 }
 </script>
 </body>
