@@ -433,7 +433,7 @@ section { padding: 80px 32px; }
 /* ── 플랜 ── */
 .plans-bg { background: var(--white); }
 .plan-cards {
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 0;
   border: 1px solid var(--rule);
   border-radius: 10px; overflow: hidden;
@@ -685,14 +685,30 @@ footer {
   .kpi-item:nth-child(4) { border-top: 1px solid var(--rule); border-right: none; }
   .how-steps { grid-template-columns: 1fr; }
   .prob-cards { grid-template-columns: 1fr; }
-  .plan-cards { grid-template-columns: 1fr 1fr; }
-  .plan-card:nth-child(2) { border-right: none; }
-  .plan-card:nth-child(3) { border-top: 1px solid var(--rule); }
-  .plan-card:nth-child(4) { border-top: 1px solid var(--rule); border-right: none; }
+  .plan-cards { grid-template-columns: 1fr; }
+  .plan-card { border-right: none; border-bottom: 1px solid var(--rule); }
+  .plan-card:last-child { border-bottom: none; }
   .contact-inner { grid-template-columns: 1fr; gap: 40px; }
   .nav-links .nav-link { display: none; }
   .nav-links .nav-link:last-child,.nav-links .nav-cta { display: inline-flex; }
   footer .footer-links { display: none; }
+}
+
+/* ── 모바일(폰) ── */
+@media (max-width: 560px) {
+  html, body { overflow-x: hidden; }
+  section { padding: 52px 18px; }
+  nav .nav-inner { padding: 0 18px; height: 56px; }
+  .nav-logo-text { display: none; }
+  .sec-title { font-size: clamp(22px, 6vw, 28px); }
+  .sec-sub { font-size: 14px; }
+  .hero-desc { font-size: 15px; line-height: 1.75; }
+  .hero-cta-group { gap: 10px; }
+  .hero-cta-group .hcta-main, .hero-cta-group .hcta-sub { flex: 1 1 100%; justify-content: center; }
+  .kpi-inner { grid-template-columns: 1fr 1fr; }
+  .plan-card { padding: 26px 20px; }
+  .plan-price { font-size: 32px; }
+  .preview-card { max-width: 100%; }
 }
 </style>
 </head>
