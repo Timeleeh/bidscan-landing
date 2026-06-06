@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BidScan — 나라장터 입찰공고 자동 알림 서비스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:    #1a2d4f;
+  --navy-2:  #243a63;
+  --navy-3:  #0f1e38;
+  --blue:    #2563a8;
+  --blue-l:  #3b7cc9;
+  --gold:    #c49a3c;
+  --gold-l:  #d9b25a;
+  --white:   #ffffff;
+  --off:     #f4f6fa;
+  --off-2:   #e8ecf4;
+  --rule:    #dde2ed;
+  --text:    #1a1f2e;
+  --text-2:  #3d4a62;
+  --text-3:  #7a8499;
+  --serif:   'Noto Serif KR', serif;
+  --sans:    'Noto Sans KR', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--white);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+}
+a { text-decoration: none; color: inherit; }
+
+/* ── 상단 안내 띠 ── */
+.topbar {
+  background: var(--navy-3);
+  color: rgba(255,255,255,0.85);
+  text-align: center;
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+.topbar b { color: var(--gold-l); font-weight: 500; }
+
+/* ── 네비게이션 ── */
+nav {
+  position: sticky; top: 0; z-index: 900;
+  background: var(--white);
+  border-bottom: 2px solid var(--navy);
+  box-shadow: 0 2px 12px rgba(26,45,79,0.08);
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px; padding: 0 32px;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+}
+.nav-logo-badge {
+  background: var(--navy);
+  color: var(--white);
+  font-size: 18px; font-weight: 700;
+  padding: 6px 14px;
+  letter-spacing: 1px;
+}
+.nav-logo-text {
+  font-size: 13px; color: var(--text-3); font-weight: 400;
+  line-height: 1.4;
+}
+.nav-links {
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-link {
+  font-size: 14px; font-weight: 500; color: var(--text-2);
+  padding: 8px 16px; border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+.nav-link:hover { background: var(--off); color: var(--navy); }
+.nav-cta {
+  font-size: 14px; font-weight: 700;
+  background: var(--navy); color: var(--white);
+  padding: 10px 22px; border-radius: 6px;
+  margin-left: 8px;
+  transition: background 0.15s;
+  display: inline-flex; align-items: center; gap: 7px;
+}
+.nav-cta:hover { background: var(--navy-2); }
+.nav-cta svg { width: 16px; height: 16px; fill: currentColor; }
+
+/* ── 히어로 ── */
+.hero {
+  background: linear-gradient(160deg, var(--navy-3) 0%, var(--navy) 55%, var(--navy-2) 100%);
+  color: var(--white);
+  padding: 80px 32px 72px;
+  position: relative;
+  overflow: hidden;
+}
+/* 배경 패턴 */
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.02) 0px,
+      rgba(255,255,255,0.02) 1px,
+      transparent 1px,
+      transparent 80px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.02) 0px,
+      rgba(255,255,255,0.02) 1px,
+      transparent 1px,
+      transparent 80px
+    );
+  pointer-events: none;
+}
+.hero-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 420px;
+  gap: 64px; align-items: center;
+  position: relative; z-index: 1;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(196,154,60,0.2);
+  border: 1px solid rgba(196,154,60,0.5);
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 12px; font-weight: 500; color: var(--gold-l);
+  letter-spacing: 0.5px;
+  margin-bottom: 24px;
+}
+.hero-badge-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--gold-l);
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.hero-h1 {
+  font-family: var(--serif);
+  font-size: clamp(32px, 4.5vw, 52px);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+  margin-bottom: 20px;
+  word-break: keep-all;
+}
+.hero-h1 .point { color: var(--gold-l); }
+
+.hero-desc {
+  font-size: 17px; font-weight: 300;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.85; margin-bottom: 40px;
+  word-break: keep-all;
+}
+
+.hero-cta-group {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+.hcta-main {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold); color: var(--navy-3);
+  font-size: 16px; font-weight: 700; padding: 14px 30px;
+  border-radius: 6px; transition: background 0.15s;
+}
+.hcta-main:hover { background: var(--gold-l); }
+.hcta-sub {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.88);
+  font-size: 16px; font-weight: 500; padding: 14px 28px;
+  border-radius: 6px; transition: background 0.15s;
+}
+.hcta-sub:hover { background: rgba(255,255,255,0.18); }
+
+.hero-trust {
+  display: flex; gap: 28px; flex-wrap: wrap;
+}
+.trust-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: rgba(255,255,255,0.55);
+}
+.trust-check {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: rgba(196,154,60,0.25);
+  border: 1px solid rgba(196,154,60,0.5);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 10px; color: var(--gold-l);
+}
+
+/* 알림 카드 미리보기 */
+.preview-card {
+  background: var(--white);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.35), 0 4px 12px rgba(0,0,0,0.2);
+}
+.pc-header {
+  background: var(--off);
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+.pc-tg-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.pc-tg-icon svg { width: 18px; height: 18px; fill: white; }
+.pc-title-t { font-size: 14px; font-weight: 700; color: var(--text); }
+.pc-live { font-size: 11px; color: #2ecc71; font-weight: 500; }
+.pc-body {
+  padding: 18px;
+  background: #eef2f7;
+}
+.pc-bubble {
+  background: var(--white);
+  border-radius: 4px 12px 12px 12px;
+  padding: 16px 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.pc-noti-label {
+  font-size: 12px; font-weight: 700; color: var(--blue);
+  letter-spacing: 0.5px; margin-bottom: 10px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--rule);
+  display: flex; align-items: center; gap: 6px;
+}
+.pc-noti-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+.pc-noti-title {
+  font-size: 14px; font-weight: 700; color: var(--text);
+  line-height: 1.5; margin-bottom: 12px; word-break: keep-all;
+}
+.pc-rows { display: flex; flex-direction: column; gap: 5px; }
+.pc-row { display: grid; grid-template-columns: 64px 1fr; gap: 8px; font-size: 12px; }
+.pc-lbl { color: var(--text-3); font-weight: 500; }
+.pc-val { color: var(--text); font-weight: 400; }
+.pc-val.kw { color: var(--blue); font-weight: 700; }
+.pc-val.deadline { color: #c0392b; font-weight: 600; }
+.pc-divider { height: 1px; background: var(--rule); margin: 12px 0; }
+.pc-link { font-size: 12px; color: var(--blue); font-weight: 500; }
+.pc-plan-line {
+  font-size: 11px; color: var(--text-3);
+  padding-top: 10px; border-top: 1px solid var(--rule); margin-top: 8px;
+  text-align: right;
+}
+.pc-actions {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  margin-top: 12px;
+}
+.pc-act {
+  padding: 9px;
+  border: 1px solid var(--rule); border-radius: 6px;
+  font-size: 12px; font-weight: 500; color: var(--text-2);
+  text-align: center; background: var(--white);
+}
+.pc-act.main { background: var(--navy); color: var(--white); border-color: var(--navy); }
+.preview-caption {
+  padding: 10px 18px;
+  font-size: 11px; color: var(--text-3); text-align: center;
+  background: var(--off); border-top: 1px solid var(--rule);
+}
+
+/* ── 숫자 실적 띠 ── */
+.kpi-bar {
+  background: var(--off);
+  border-bottom: 1px solid var(--rule);
+}
+.kpi-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+}
+.kpi-item {
+  padding: 32px 24px;
+  border-right: 1px solid var(--rule);
+  text-align: center;
+}
+.kpi-item:last-child { border-right: none; }
+.kpi-num {
+  font-family: var(--serif);
+  font-size: 38px; font-weight: 700;
+  color: var(--navy); line-height: 1;
+  margin-bottom: 6px; letter-spacing: -1px;
+}
+.kpi-label {
+  font-size: 13px; color: var(--text-3); font-weight: 400;
+  line-height: 1.5;
+}
+
+/* ── 공통 섹션 ── */
+section { padding: 80px 32px; }
+.inner { max-width: 1100px; margin: 0 auto; }
+.sec-tag {
+  display: inline-block;
+  background: var(--off-2);
+  border-left: 3px solid var(--navy);
+  padding: 4px 12px;
+  font-size: 12px; font-weight: 700; color: var(--navy);
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.sec-title {
+  font-family: var(--serif);
+  font-size: clamp(26px, 3.5vw, 38px);
+  font-weight: 700; line-height: 1.35; letter-spacing: -0.5px;
+  margin-bottom: 12px; word-break: keep-all;
+}
+.sec-sub {
+  font-size: 16px; color: var(--text-3); line-height: 1.8;
+  margin-bottom: 48px; max-width: 580px; word-break: keep-all;
+}
+
+/* ── 사용법 ── */
+.how-bg { background: var(--white); }
+.how-steps {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; margin-bottom: 48px;
+}
+.how-card {
+  background: var(--off);
+  border-radius: 10px;
+  padding: 32px 28px;
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--navy);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.how-card:hover {
+  box-shadow: 0 8px 28px rgba(26,45,79,0.1);
+  transform: translateY(-3px);
+}
+.how-num {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--navy); color: var(--white);
+  font-size: 18px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 18px;
+}
+.how-title {
+  font-family: var(--serif);
+  font-size: 20px; font-weight: 700;
+  margin-bottom: 10px; letter-spacing: -0.3px;
+}
+.how-body { font-size: 14px; color: var(--text-2); line-height: 1.8; word-break: keep-all; }
+.how-code {
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--navy-3); border-radius: 6px;
+  font-size: 13px; color: var(--gold-l);
+  font-family: 'Courier New', monospace;
+  line-height: 1.8;
+}
+
+/* 명령어 표 */
+.cmd-table {
+  width: 100%; border-collapse: collapse;
+  border: 1px solid var(--rule);
+  border-radius: 8px; overflow: hidden;
+}
+.cmd-table thead {
+  background: var(--navy);
+  color: var(--white);
+}
+.cmd-table th {
+  padding: 14px 20px;
+  font-size: 13px; font-weight: 600; text-align: left;
+  letter-spacing: 0.5px;
+}
+.cmd-table td {
+  padding: 14px 20px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: middle;
+}
+.cmd-table tbody tr:last-child td { border-bottom: none; }
+.cmd-table tbody tr:hover { background: var(--off); }
+.cmd-name {
+  font-family: 'Courier New', monospace;
+  font-size: 13px; font-weight: 700;
+  color: var(--navy); background: var(--off-2);
+  padding: 3px 8px; border-radius: 4px;
+  display: inline-block;
+}
+.cmd-plan {
+  font-size: 11px; font-weight: 600; color: var(--text-3);
+  background: var(--off); border: 1px solid var(--rule);
+  padding: 2px 8px; border-radius: 3px; display: inline-block;
+}
+.cmd-plan.all { color: var(--navy); border-color: var(--navy); background: var(--off-2); }
+
+/* ── 문제 인식 ── */
+.problem { background: var(--off); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.prob-cards {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.prob-card {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 28px 28px 24px;
+  display: flex; gap: 18px;
+  transition: box-shadow 0.2s;
+}
+.prob-card:hover { box-shadow: 0 6px 20px rgba(26,45,79,0.08); }
+.prob-icon {
+  width: 44px; height: 44px; border-radius: 8px;
+  background: var(--off-2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 22px;
+}
+.prob-title {
+  font-family: var(--serif);
+  font-size: 17px; font-weight: 700;
+  margin-bottom: 8px; letter-spacing: -0.2px; word-break: keep-all;
+}
+.prob-body {
+  font-size: 14px; color: var(--text-2); line-height: 1.8; word-break: keep-all;
+}
+
+/* ── 플랜 ── */
+.plans-bg { background: var(--white); }
+.plan-cards {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--rule);
+  border-radius: 10px; overflow: hidden;
+}
+.plan-card {
+  padding: 32px 24px;
+  border-right: 1px solid var(--rule);
+  display: flex; flex-direction: column;
+}
+.plan-card:last-child { border-right: none; }
+.plan-card.feat {
+  background: var(--navy);
+  color: var(--white);
+  position: relative;
+}
+.feat-badge {
+  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  background: var(--gold); color: var(--navy-3);
+  font-size: 11px; font-weight: 700; padding: 4px 14px;
+  border-radius: 0 0 6px 6px; letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.plan-tier {
+  font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--text-3);
+  margin-bottom: 14px;
+}
+.plan-card.feat .plan-tier { color: rgba(255,255,255,0.45); }
+.plan-price {
+  font-family: var(--serif);
+  font-size: 36px; font-weight: 700; letter-spacing: -1px;
+  line-height: 1; margin-bottom: 4px; color: var(--text);
+}
+.plan-card.feat .plan-price { color: var(--white); }
+.plan-unit { font-size: 13px; color: var(--text-3); margin-bottom: 24px; }
+.plan-card.feat .plan-unit { color: rgba(255,255,255,0.4); }
+.plan-feats {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 0;
+}
+.pf {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--text-3);
+  padding: 9px 0; border-bottom: 1px solid var(--rule);
+}
+.plan-card.feat .pf { border-bottom-color: rgba(255,255,255,0.1); }
+.pf:last-child { border-bottom: none; }
+.pf.ok { color: var(--text); font-weight: 500; }
+.plan-card.feat .pf.ok { color: rgba(255,255,255,0.9); }
+.pf-ic { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+.pf-ic.y { background: var(--navy); color: white; }
+.plan-card.feat .pf-ic.y { background: var(--gold); color: var(--navy-3); }
+.pf-ic.n { background: var(--rule); color: var(--text-3); }
+.plan-card.feat .pf-ic.n { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.25); }
+.plan-cta {
+  display: block; margin-top: 24px; text-align: center;
+  padding: 12px; font-size: 14px; font-weight: 600;
+  border-radius: 6px; transition: all 0.15s;
+}
+.pcta-border {
+  border: 2px solid var(--rule); color: var(--text-2);
+}
+.pcta-border:hover { border-color: var(--navy); color: var(--navy); }
+.pcta-white { background: var(--white); color: var(--navy); }
+.pcta-white:hover { background: var(--off); }
+.plan-note-box {
+  margin-top: 20px; padding: 16px 20px;
+  background: var(--off-2); border-radius: 8px;
+  border-left: 3px solid var(--gold);
+  font-size: 13px; color: var(--text-2); line-height: 1.7;
+  word-break: keep-all;
+}
+.plan-note-box b { color: var(--navy); }
+
+/* ── 문의 섹션 ── */
+.contact-sec { background: var(--navy-3); color: var(--white); }
+.contact-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 64px; align-items: start;
+}
+.contact-left .sec-tag { background: rgba(196,154,60,0.15); border-color: var(--gold); color: var(--gold-l); }
+.contact-left .sec-title { color: var(--white); margin-bottom: 16px; }
+.contact-left .sec-sub { color: rgba(255,255,255,0.55); margin-bottom: 32px; }
+.contact-info {
+  display: flex; flex-direction: column; gap: 14px;
+}
+.ci-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.6;
+}
+.ci-mark {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(196,154,60,0.2);
+  border: 1px solid rgba(196,154,60,0.4);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 11px; color: var(--gold-l);
+  margin-top: 1px;
+}
+
+/* 문의 폼 */
+.contact-form {
+  background: var(--white);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.cf-head {
+  background: var(--navy);
+  padding: 18px 24px;
+  font-family: var(--serif);
+  font-size: 17px; font-weight: 700; color: var(--white);
+}
+.cf-body { padding: 28px 24px; }
+.cf-field { margin-bottom: 18px; }
+.cf-label {
+  display: block; font-size: 13px; font-weight: 600;
+  color: var(--text-2); margin-bottom: 7px; letter-spacing: 0.2px;
+}
+.cf-req { color: #c0392b; margin-left: 2px; }
+.cf-input {
+  width: 100%; border: 1.5px solid var(--rule); border-radius: 6px;
+  padding: 11px 14px; font-family: var(--sans);
+  font-size: 14px; color: var(--text); background: var(--white);
+  outline: none; transition: border-color 0.2s;
+}
+.cf-input:focus { border-color: var(--navy); }
+.cf-input::placeholder { color: var(--text-3); }
+select.cf-input { cursor: pointer; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%237a8499'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
+}
+textarea.cf-input { resize: none; height: 90px; line-height: 1.7; }
+.cf-submit {
+  width: 100%; padding: 14px;
+  background: var(--navy); color: var(--white);
+  font-family: var(--sans); font-size: 15px; font-weight: 700;
+  border: none; border-radius: 6px; cursor: pointer;
+  transition: background 0.15s; letter-spacing: 0.3px;
+}
+.cf-submit:hover { background: var(--navy-2); }
+.cf-note { font-size: 12px; color: var(--text-3); text-align: center; margin-top: 12px; line-height: 1.6; }
+.cf-success { display: none; padding: 40px 24px; text-align: center; }
+.cf-success-icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--off-2);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 26px;
+}
+.cf-success-title {
+  font-family: var(--serif);
+  font-size: 20px; font-weight: 700; margin-bottom: 10px;
+}
+.cf-success-body { font-size: 14px; color: var(--text-2); line-height: 1.8; }
+.cf-success-link {
+  display: inline-block; margin-top: 16px;
+  font-size: 14px; font-weight: 700; color: var(--navy);
+  background: var(--off-2); padding: 10px 20px; border-radius: 6px;
+}
+
+/* ── FAQ ── */
+.faq-sec { background: var(--off); border-top: 1px solid var(--rule); }
+.faq-list { display: flex; flex-direction: column; gap: 0; }
+.faq-item {
+  border: 1px solid var(--rule); border-radius: 8px;
+  overflow: hidden; margin-bottom: 10px;
+  background: var(--white);
+}
+.faq-q {
+  width: 100%; background: var(--white);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 24px; gap: 20px;
+  font-size: 15px; font-weight: 600; color: var(--text);
+  text-align: left; cursor: pointer;
+  border: none; font-family: var(--sans);
+  transition: background 0.15s; word-break: keep-all;
+}
+.faq-q:hover { background: var(--off); }
+.faq-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--off-2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 18px; color: var(--navy);
+  transition: transform 0.3s, background 0.2s;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); background: var(--navy); color: var(--white); }
+.faq-a {
+  max-height: 0; overflow: hidden;
+  font-size: 14px; color: var(--text-2); line-height: 1.85;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  padding: 0 24px; word-break: keep-all;
+}
+.faq-item.open .faq-a { max-height: 180px; padding: 0 24px 20px; }
+
+/* ── 하단 CTA 띠 ── */
+.bottom-cta {
+  background: var(--gold);
+  padding: 52px 32px; text-align: center;
+}
+.bottom-cta-title {
+  font-family: var(--serif);
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 700; color: var(--navy-3);
+  margin-bottom: 12px; letter-spacing: -0.5px; word-break: keep-all;
+}
+.bottom-cta-sub {
+  font-size: 15px; color: rgba(26,45,79,0.7);
+  margin-bottom: 32px; line-height: 1.7; word-break: keep-all;
+}
+.bottom-cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--navy-3); color: var(--white);
+  font-size: 16px; font-weight: 700; padding: 15px 36px;
+  border-radius: 6px; transition: background 0.15s;
+}
+.bottom-cta-btn:hover { background: var(--navy); }
+.bottom-cta-btn svg { width: 18px; height: 18px; fill: white; }
+
+/* ── 푸터 ── */
+footer {
+  background: var(--navy-3);
+  border-top: 3px solid var(--navy);
+  padding: 36px 32px;
+  color: rgba(255,255,255,0.5);
+}
+.footer-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-logo { font-family: var(--serif); font-size: 20px; font-weight: 700; color: var(--white); }
+.footer-links { display: flex; gap: 24px; }
+.footer-link { font-size: 13px; color: rgba(255,255,255,0.5); transition: color 0.15s; }
+.footer-link:hover { color: rgba(255,255,255,0.9); }
+.footer-note { font-size: 12px; }
+
+/* ── 스크롤 애니메이션 ── */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+.rd1 { transition-delay: 0.1s; } .rd2 { transition-delay: 0.2s; } .rd3 { transition-delay: 0.3s; }
+
+/* ── 반응형 ── */
+@media (max-width: 960px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .preview-card { max-width: 380px; }
+  .kpi-inner { grid-template-columns: 1fr 1fr; }
+  .kpi-item:nth-child(2) { border-right: none; }
+  .kpi-item:nth-child(3) { border-top: 1px solid var(--rule); }
+  .kpi-item:nth-child(4) { border-top: 1px solid var(--rule); border-right: none; }
+  .how-steps { grid-template-columns: 1fr; }
+  .prob-cards { grid-template-columns: 1fr; }
+  .plan-cards { grid-template-columns: 1fr 1fr; }
+  .plan-card:nth-child(2) { border-right: none; }
+  .plan-card:nth-child(3) { border-top: 1px solid var(--rule); }
+  .plan-card:nth-child(4) { border-top: 1px solid var(--rule); border-right: none; }
+  .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+  .nav-links .nav-link { display: none; }
+  .nav-links .nav-link:last-child,.nav-links .nav-cta { display: inline-flex; }
+  footer .footer-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- 상단 안내 -->
+<div class="topbar">
+  현재 <b>파일럿 운영 중</b> — 텔레그램으로 지금 바로 무료 사용 가능 &nbsp;|&nbsp; <b>30분마다</b> 나라장터 전체 공고 자동 수집
+</div>
+
+<!-- 네비게이션 -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="nav-logo-badge">BidScan</div>
+      <div class="nav-logo-text">나라장터 입찰공고<br>자동 알림 서비스</div>
+    </div>
+    <div class="nav-links">
+      <a class="nav-link" href="#how">사용방법</a>
+      <a class="nav-link" href="#plans">요금안내</a>
+      <a class="nav-link" href="#contact">문의하기</a>
+      <a class="nav-cta" href="https://t.me/bidscanjh_bot" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+        텔레그램 무료 시작
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- 히어로 -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        지금 운영 중 · 30분마다 자동 수집
+      </div>
+      <h1 class="hero-h1">
+        나라장터 공고,<br>
+        <span class="point">매일 직접 찾으십니까?</span><br>
+        이제 자동으로 받으세요.
+      </h1>
+      <p class="hero-desc">
+        키워드 한 번 등록하면 끝입니다.<br>
+        조건에 맞는 입찰공고가 올라오면 텔레그램으로 즉시 알려드립니다.<br>
+        분야 제한 없이 나라장터 전체 공고를 30분마다 스캔합니다.
+      </p>
+      <div class="hero-cta-group">
+        <a class="hcta-main" href="https://t.me/bidscanjh_bot" target="_blank">
+          <svg style="width:18px;height:18px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+          텔레그램에서 무료로 시작
+        </a>
+        <a class="hcta-sub" href="#contact">구독 요금 문의하기</a>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item"><div class="trust-check">✓</div>무료로 바로 시작</div>
+        <div class="trust-item"><div class="trust-check">✓</div>분야 제한 없음</div>
+        <div class="trust-item"><div class="trust-check">✓</div>중복 알림 없음</div>
+        <div class="trust-item"><div class="trust-check">✓</div>30분마다 자동 수집</div>
+      </div>
+    </div>
+
+    <!-- 알림 미리보기 -->
+    <div>
+      <div class="preview-card">
+        <div class="pc-header">
+          <div class="pc-tg-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+          </div>
+          <div>
+            <div class="pc-title-t">BidScan 알림봇</div>
+            <div class="pc-live">● 실시간 운영 중</div>
+          </div>
+        </div>
+        <div class="pc-body">
+          <div class="pc-bubble">
+            <div class="pc-noti-label">
+              <span class="pc-noti-dot"></span>
+              새 입찰공고 알림
+            </div>
+            <div class="pc-noti-title">재단법인 4·16재단 업무용차량 임차 용역</div>
+            <div class="pc-rows">
+              <div class="pc-row"><span class="pc-lbl">분야</span><span class="pc-val">용역</span></div>
+              <div class="pc-row"><span class="pc-lbl">발주기관</span><span class="pc-val">재단법인 416재단</span></div>
+              <div class="pc-row"><span class="pc-lbl">추정가격</span><span class="pc-val">5,454만원</span></div>
+              <div class="pc-row"><span class="pc-lbl">입찰마감</span><span class="pc-val deadline">2026.06.12 (D-7)</span></div>
+              <div class="pc-row"><span class="pc-lbl">매칭키워드</span><span class="pc-val kw">차량</span></div>
+            </div>
+            <div class="pc-divider"></div>
+            <div class="pc-link">▶ 나라장터 공고 원문 바로가기</div>
+            <div class="pc-plan-line">Pro 플랜 이용 중</div>
+          </div>
+          <div class="pc-actions">
+            <div class="pc-act">공고 저장</div>
+            <div class="pc-act main">상세 확인</div>
+          </div>
+        </div>
+        <div class="preview-caption">실제 텔레그램 알림 예시 화면</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KPI 띠 -->
+<div class="kpi-bar">
+  <div class="kpi-inner">
+    <div class="kpi-item reveal">
+      <div class="kpi-num">30분</div>
+      <div class="kpi-label">나라장터 전체 공고<br>자동 수집 주기</div>
+    </div>
+    <div class="kpi-item reveal rd1">
+      <div class="kpi-num">0건</div>
+      <div class="kpi-label">중복 발송<br>(공고번호 기준 필터링)</div>
+    </div>
+    <div class="kpi-item reveal rd2">
+      <div class="kpi-num">무제한</div>
+      <div class="kpi-label">모니터링 분야<br>(나라장터 전체 대상)</div>
+    </div>
+    <div class="kpi-item reveal rd3">
+      <div class="kpi-num">무료</div>
+      <div class="kpi-label">시작 비용<br>(무료 플랜 제공)</div>
+    </div>
+  </div>
+</div>
+
+<!-- 사용방법 -->
+<section class="how-bg" id="how">
+  <div class="inner">
+    <div class="sec-tag reveal">사용 방법</div>
+    <h2 class="sec-title reveal rd1">3단계로 바로 시작하실 수 있습니다</h2>
+    <p class="sec-sub reveal rd2">복잡한 설치나 회원가입 없이, 텔레그램에서 바로 사용하세요.</p>
+
+    <div class="how-steps reveal rd2">
+      <div class="how-card">
+        <div class="how-num">1</div>
+        <div class="how-title">텔레그램 봇 시작</div>
+        <div class="how-body">
+          텔레그램 앱에서 아래 주소로 접속 후 <b>시작</b> 버튼을 누르거나 <b>/start</b>를 입력합니다.<br><br>
+          별도 회원가입이나 설치가 필요 없습니다.
+        </div>
+        <div class="how-code">t.me/bidscanjh_bot</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">2</div>
+        <div class="how-title">키워드 등록</div>
+        <div class="how-body">
+          찾고 싶은 공고의 핵심 단어를 입력합니다.<br>
+          앞에 <b>-</b>를 붙이면 해당 단어가 들어간 공고는 제외됩니다.
+        </div>
+        <div class="how-code">
+          /addkeyword 소프트웨어<br>
+          /addkeyword IT용역<br>
+          /addkeyword -단순노무
+        </div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">3</div>
+        <div class="how-title">알림 수신</div>
+        <div class="how-body">
+          나라장터에 조건에 맞는 공고가 등록되면<br>
+          텔레그램으로 즉시 알림이 전송됩니다.<br><br>
+          30분마다 자동 수집 · 같은 공고 중복 발송 없음.
+        </div>
+      </div>
+    </div>
+
+    <!-- 명령어 표 -->
+    <div class="reveal" style="margin-top: 48px;">
+      <h3 style="font-family:var(--serif); font-size:22px; font-weight:700; margin-bottom:20px; letter-spacing:-0.3px;">주요 명령어</h3>
+      <table class="cmd-table">
+        <thead>
+          <tr>
+            <th style="width:180px">명령어</th>
+            <th>기능 설명</th>
+            <th style="width:100px">사용 플랜</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="cmd-name">/start</span></td><td>봇 시작 및 재활성화</td><td><span class="cmd-plan all">전체</span></td></tr>
+          <tr><td><span class="cmd-name">/addkeyword</span></td><td>키워드 추가 (앞에 - 붙이면 제외 키워드)</td><td><span class="cmd-plan all">전체</span></td></tr>
+          <tr><td><span class="cmd-name">/keywords</span></td><td>등록된 키워드 목록 확인</td><td><span class="cmd-plan all">전체</span></td></tr>
+          <tr><td><span class="cmd-name">/status</span></td><td>현재 설정 및 오늘 알림 발송 수 확인</td><td><span class="cmd-plan all">전체</span></td></tr>
+          <tr><td><span class="cmd-name">/pause</span></td><td>알림 일시중지 / 다시 입력하면 재개</td><td><span class="cmd-plan all">전체</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 문제 인식 -->
+<section class="problem">
+  <div class="inner">
+    <div class="sec-tag reveal">이런 불편함이 있으셨나요?</div>
+    <h2 class="sec-title reveal rd1">매일 나라장터를 직접 확인하고 계신다면</h2>
+    <p class="sec-sub reveal rd2">BidScan이 그 수고를 대신합니다.</p>
+    <div class="prob-cards reveal rd2">
+      <div class="prob-card">
+        <div class="prob-icon">📋</div>
+        <div>
+          <div class="prob-title">하루에도 수백~수천 건의 공고가 올라옵니다</div>
+          <div class="prob-body">나라장터에는 하루 평균 1,200건 이상의 공고가 등록됩니다. 이를 매일 수동으로 확인하는 것은 시간 낭비입니다.</div>
+        </div>
+      </div>
+      <div class="prob-card">
+        <div class="prob-icon">⏰</div>
+        <div>
+          <div class="prob-title">좋은 공고를 놓치거나 뒤늦게 발견하게 됩니다</div>
+          <div class="prob-body">확인하지 못한 사이 마감이 지나거나, 경쟁사가 먼저 발견하는 경우가 생깁니다.</div>
+        </div>
+      </div>
+      <div class="prob-card">
+        <div class="prob-icon">🔍</div>
+        <div>
+          <div class="prob-title">나라장터에는 자동 알림 기능이 없습니다</div>
+          <div class="prob-body">직접 접속해서 검색하지 않으면 새 공고를 알 방법이 없습니다. BidScan이 24시간 대신 지켜봅니다.</div>
+        </div>
+      </div>
+      <div class="prob-card">
+        <div class="prob-icon">🗂️</div>
+        <div>
+          <div class="prob-title">관련 없는 공고를 걸러내는 데도 시간이 걸립니다</div>
+          <div class="prob-body">검색 결과의 대부분은 실제로 참여할 수 없는 공고입니다. BidScan은 내 키워드에 맞는 것만 골라서 보내드립니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 요금 안내 -->
+<section class="plans-bg" id="plans">
+  <div class="inner">
+    <div class="sec-tag reveal">요금 안내</div>
+    <h2 class="sec-title reveal rd1">무료로 시작하고, 필요하면 업그레이드하세요</h2>
+    <p class="sec-sub reveal rd2">현재 결제 시스템 구축 중입니다. 유료 플랜은 이메일 문의로 신청받고 있습니다.</p>
+
+    <div class="plan-cards reveal rd2">
+      <div class="plan-card">
+        <div class="plan-tier">무료 (Free)</div>
+        <div class="plan-price">0원</div>
+        <div class="plan-unit">체험용 · 제한 있음</div>
+        <div class="plan-feats">
+          <div class="pf ok"><div class="pf-ic y">✓</div>키워드 1개</div>
+          <div class="pf ok"><div class="pf-ic y">✓</div>하루 알림 3건</div>
+          <div class="pf"><div class="pf-ic n">✗</div>금액 필터</div>
+          <div class="pf"><div class="pf-ic n">✗</div>지역 필터</div>
+          <div class="pf"><div class="pf-ic n">✗</div>공고 저장</div>
+        </div>
+        <a class="plan-cta pcta-border" href="https://t.me/bidscanjh_bot" target="_blank">텔레그램에서 시작</a>
+      </div>
+      <div class="plan-card">
+        <div class="plan-tier">베이직 (Basic)</div>
+        <div class="plan-price">9,900원</div>
+        <div class="plan-unit">월 / 개인 담당자용</div>
+        <div class="plan-feats">
+          <div class="pf ok"><div class="pf-ic y">✓</div>키워드 5개</div>
+          <div class="pf ok"><div class="pf-ic y">✓</div>무제한 알림</div>
+          <div class="pf ok"><div class="pf-ic y">✓</div>금액 필터</div>
+          <div class="pf ok"><div class="pf-ic y">✓</div>지역 필터</div>
+          <div class="pf"><div class="pf-ic n">✗</div>발주기관 필터</div>
+        </div>
+        <a class="plan-cta pcta-border" href="#contact">문의하기</a>
+      </div>
+      <div class="plan-card feat">
+        <div class="feat-badge">가장 인기</div>
+        <div class="plan-tier">프로 (Pro)</div>
+        <div class="plan-price">29,900원</div>
+        <div class="plan-unit">월 / 중소기업 영업팀용</div>
+        <div class="plan-feats">
+          <div class="pf ok"><div class="pf-ic y">✓</div>키워드 20개</div>
+          <div class="pf ok"><div class="pf-ic y">✓</div>무제한 알림</div>
+          <div class="pf ok"><div class="pf-ic y">✓</div>발주기관 필터</div>
+          <div class="pf ok"><div class="pf-ic y">✓</div>웹 대시보드</div>
+          <div class="pf ok"><div class="pf-ic y">✓</div>일간 요약 리포트</div>
+        </div>
+        <a class="plan-cta pcta-white" href="#contact">문의하기</a>
+      </div>
+      <div class="plan-card">
+        <div class="plan-tier">팀 (Team)</div>
+        <div class="plan-price">99,000원</div>
+        <div class="plan-unit">월 / 팀·에이전시용</div>
+        <div class="plan-feats">
+          <div class="pf ok"><div class="pf-ic y">✓</div>키워드 무제한</div>
+          <div class="pf ok"><div class="pf-ic y">✓</div>팀원 5명 공유</div>
+          <div class="pf ok"><div class="pf-ic y">✓</div>엑셀 다운로드</div>
+          <div class="pf ok"><div class="pf-ic y">✓</div>프로 전체 포함</div>
+          <div class="pf"><div class="pf-ic n">–</div>카카오톡 알림 (예정)</div>
+        </div>
+        <a class="plan-cta pcta-border" href="#contact">문의하기</a>
+      </div>
+    </div>
+
+    <div class="plan-note-box reveal" style="margin-top:20px;">
+      <b>유료 플랜 신청 안내</b> — 현재 결제 시스템을 구축 중입니다. 유료 플랜을 이용하시려면 아래 <b>문의하기</b>를 통해 신청해 주시면 담당자가 24시간 이내에 연락드립니다. 무료 플랜은 텔레그램에서 바로 시작하실 수 있습니다.
+    </div>
+  </div>
+</section>
+
+<!-- 문의 -->
+<section class="contact-sec" id="contact">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <div>
+        <div class="sec-tag">구독 문의</div>
+        <h2 class="sec-title">지금 바로<br>문의해 주세요</h2>
+        <p class="sec-sub">이메일로 문의 주시면 24시간 이내에 담당자가 연락드립니다.</p>
+      </div>
+      <div class="contact-info">
+        <div class="ci-item">
+          <div class="ci-mark">1</div>
+          문의 폼 작성 및 제출
+        </div>
+        <div class="ci-item">
+          <div class="ci-mark">2</div>
+          24시간 이내 담당자 이메일 연락
+        </div>
+        <div class="ci-item">
+          <div class="ci-mark">3</div>
+          플랜 안내 및 계정 설정 도움
+        </div>
+        <div class="ci-item">
+          <div class="ci-mark">✓</div>
+          그 전에 무료 플랜으로 먼저 사용해보실 수 있습니다 → t.me/bidscanjh_bot
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="contact-form">
+        <div class="cf-head">구독 문의 · 상담 신청</div>
+        <div class="cf-body" id="cfBody">
+          <div class="cf-field">
+            <label class="cf-label" for="cf-email">이메일 주소<span class="cf-req">*</span></label>
+            <input class="cf-input" type="email" id="cf-email" placeholder="name@company.com">
+          </div>
+          <div class="cf-field">
+            <label class="cf-label" for="cf-name">이름 / 소속</label>
+            <input class="cf-input" type="text" id="cf-name" placeholder="예: 홍길동 · 삼성전자 물류팀">
+          </div>
+          <div class="cf-field">
+            <label class="cf-label" for="cf-plan">관심 플랜</label>
+            <select class="cf-input" id="cf-plan">
+              <option value="" disabled selected>선택해 주세요</option>
+              <option>베이직 (Basic) — 월 9,900원</option>
+              <option>프로 (Pro) — 월 29,900원</option>
+              <option>팀 (Team) — 월 99,000원</option>
+              <option>상담 후 결정</option>
+            </select>
+          </div>
+          <div class="cf-field">
+            <label class="cf-label" for="cf-msg">문의 내용 또는 요청사항</label>
+            <textarea class="cf-input" id="cf-msg" placeholder="궁금한 점이나 요청사항을 자유롭게 남겨주세요."></textarea>
+          </div>
+          <button class="cf-submit" onclick="submitCf()">문의 보내기</button>
+          <p class="cf-note">담당자가 입력하신 이메일로 24시간 이내 연락드립니다.</p>
+        </div>
+        <div class="cf-success" id="cfSuccess">
+          <div class="cf-success-icon">✓</div>
+          <div class="cf-success-title">문의가 접수되었습니다</div>
+          <div class="cf-success-body">
+            24시간 이내에 이메일로 연락드리겠습니다.<br>
+            그 전에 무료 플랜을 먼저 사용해보세요.
+          </div>
+          <a class="cf-success-link" href="https://t.me/bidscanjh_bot" target="_blank">텔레그램 무료 시작 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-sec">
+  <div class="inner">
+    <div class="sec-tag reveal">자주 묻는 질문</div>
+    <h2 class="sec-title reveal rd1">궁금하신 점이 있으신가요?</h2>
+    <div class="faq-list reveal rd2">
+      <div class="faq-item">
+        <button class="faq-q" onclick="faqToggle(this)">얼마나 자주 나라장터를 확인하나요?<span class="faq-icon">+</span></button>
+        <div class="faq-a">30분마다 나라장터 신규 공고를 자동으로 수집합니다. 공고가 등록되면 30분 이내에 알림이 발송됩니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="faqToggle(this)">같은 공고가 중복으로 오지는 않나요?<span class="faq-icon">+</span></button>
+        <div class="faq-a">한 번 알림을 보낸 공고는 공고번호 기준으로 기록되어 다시 발송되지 않습니다. 중복 걱정 없이 사용하실 수 있습니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="faqToggle(this)">어떤 분야 공고까지 알림을 받을 수 있나요?<span class="faq-icon">+</span></button>
+        <div class="faq-a">분야 제한이 없습니다. 나라장터에 올라오는 모든 공고를 대상으로 키워드를 매칭합니다. 건설, IT, 용역, 물품, 연구 등 모든 분야가 가능합니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="faqToggle(this)">알림을 잠시 끄고 싶을 때는 어떻게 하나요?<span class="faq-icon">+</span></button>
+        <div class="faq-a">텔레그램 봇에서 /pause 를 입력하면 알림이 일시중지됩니다. 다시 /pause 를 입력하면 재개됩니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="faqToggle(this)">텔레그램이 없으면 사용할 수 없나요?<span class="faq-icon">+</span></button>
+        <div class="faq-a">현재 파일럿 버전은 텔레그램 기반으로만 운영됩니다. 텔레그램은 스마트폰 앱스토어에서 무료로 설치하실 수 있습니다. 향후 카카오톡, 이메일 알림도 추가할 예정입니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="faqToggle(this)">결제는 어떻게 진행되나요?<span class="faq-icon">+</span></button>
+        <div class="faq-a">현재 결제 시스템을 구축 중입니다. 유료 플랜을 이용하시려면 위 문의하기 폼을 통해 신청해 주시면 담당자가 안내드립니다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 하단 CTA -->
+<div class="bottom-cta">
+  <div class="bottom-cta-title">지금 바로 무료로 시작해보세요</div>
+  <div class="bottom-cta-sub">텔레그램 앱에서 t.me/bidscanjh_bot 접속 후 /start 입력</div>
+  <a class="bottom-cta-btn" href="https://t.me/bidscanjh_bot" target="_blank">
+    <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+    텔레그램에서 무료 시작
+  </a>
+</div>
+
+<!-- 푸터 -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">BidScan</div>
+    <div class="footer-links">
+      <a class="footer-link" href="#how">사용방법</a>
+      <a class="footer-link" href="#plans">요금안내</a>
+      <a class="footer-link" href="#contact">문의하기</a>
+      <a class="footer-link" href="https://t.me/bidscanjh_bot" target="_blank">텔레그램 봇</a>
+    </div>
+    <div class="footer-note">나라장터 입찰공고 자동 알림 서비스 · 파일럿 운영 중</div>
+  </div>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+function faqToggle(btn) {
+  const item = btn.parentElement;
+  const open = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!open) item.classList.add('open');
+}
+
+function submitCf() {
+  const email = document.getElementById('cf-email').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('cf-email').style.borderColor = '#c0392b';
+    document.getElementById('cf-email').focus();
+    setTimeout(() => document.getElementById('cf-email').style.borderColor = '', 2000);
+    return;
+  }
+  document.getElementById('cfBody').style.display = 'none';
+  document.getElementById('cfSuccess').style.display = 'block';
+}
+</script>
+</body>
+</html>

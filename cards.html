@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BidScan 홍보 이미지</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:   #1a2d4f;
+  --navy-2: #0f1e38;
+  --navy-3: #243a63;
+  --gold:   #c49a3c;
+  --gold-l: #dbb054;
+  --gold-d: #96741c;
+  --white:  #ffffff;
+  --off:    #f4f6fa;
+  --rule:   #dde2ed;
+  --text:   #1a1f2e;
+  --mid:    #3d4a62;
+  --serif:  'Noto Serif KR', serif;
+  --sans:   'Noto Sans KR', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #1e1e1e;
+  font-family: var(--sans);
+  padding: 40px 0 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* ── 안내 헤더 ── */
+.guide {
+  color: rgba(255,255,255,0.6);
+  font-size: 13px; letter-spacing: 0.5px;
+  text-align: center;
+  margin-bottom: 32px;
+  line-height: 1.7;
+}
+.guide b { color: #fff; }
+
+/* ── 다운로드 버튼 ── */
+.dl-row {
+  display: flex; gap: 10px; margin: 0 0 48px;
+  flex-wrap: wrap; justify-content: center;
+}
+.dl-btn {
+  font-family: var(--sans); font-size: 13px; font-weight: 500;
+  padding: 9px 20px; border-radius: 6px;
+  cursor: pointer; border: none;
+  background: #3a3a3a; color: rgba(255,255,255,0.85);
+  transition: background 0.15s;
+  letter-spacing: 0.3px;
+}
+.dl-btn:hover { background: #4a4a4a; }
+.dl-btn.primary { background: #c49a3c; color: #0f1e38; font-weight: 700; }
+.dl-btn.primary:hover { background: #dbb054; }
+
+/* ── 카드 래퍼 ── */
+.card-section {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 12px;
+  margin-bottom: 48px;
+}
+.card-label {
+  color: rgba(255,255,255,0.45);
+  font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+}
+.card-actions { display: flex; gap: 8px; }
+.card-dl {
+  font-size: 12px; font-weight: 500;
+  padding: 7px 16px; border-radius: 5px;
+  cursor: pointer; border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.75);
+  transition: all 0.15s; font-family: var(--sans);
+}
+.card-dl:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.3); }
+
+/* ════════════════════════════════════════
+   카드 공통 — 1080×1080 비율
+   화면에서는 540px로 표시
+════════════════════════════════════════ */
+.card {
+  width: 540px;
+  height: 540px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════
+   카드 1 — 서비스 소개 (네이비 다크)
+════════════════════════════════════════ */
+#card1 {
+  background: linear-gradient(145deg, #0b1525 0%, #1a2d4f 45%, #1e3660 100%);
+  display: flex; flex-direction: column;
+  padding: 44px 48px 40px;
+}
+/* 배경 원 장식 */
+#card1::before {
+  content: '';
+  position: absolute; right: -80px; top: -80px;
+  width: 320px; height: 320px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(196,154,60,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+#card1::after {
+  content: '';
+  position: absolute; left: -40px; bottom: -60px;
+  width: 240px; height: 240px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.c1-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 28px;
+  position: relative; z-index: 1;
+}
+.c1-logo {
+  display: flex; align-items: center; gap: 10px;
+}
+.c1-logo-box {
+  background: var(--gold);
+  color: var(--navy-2);
+  font-size: 14px; font-weight: 900;
+  padding: 5px 12px; letter-spacing: 1px;
+}
+.c1-logo-sub {
+  font-size: 10px; color: rgba(255,255,255,0.4);
+  letter-spacing: 1px; line-height: 1.5;
+}
+.c1-live {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; color: rgba(255,255,255,0.45); letter-spacing: 1px;
+}
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #2ecc71; animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.c1-eyebrow {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 14px;
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 10px;
+}
+.c1-eyebrow::before { content:''; width:20px; height:1px; background:var(--gold); }
+
+.c1-title {
+  font-family: var(--serif);
+  font-size: 36px; font-weight: 900;
+  line-height: 1.25; color: var(--white);
+  margin-bottom: 10px; letter-spacing: -0.5px;
+  position: relative; z-index: 1; word-break: keep-all;
+}
+.c1-title .hl { color: var(--gold-l); }
+
+.c1-desc {
+  font-size: 13px; font-weight: 300;
+  color: rgba(255,255,255,0.58); line-height: 1.85;
+  margin-bottom: 28px; position: relative; z-index: 1;
+  word-break: keep-all; max-width: 360px;
+}
+
+.c1-pills {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 32px; position: relative; z-index: 1;
+}
+.pill {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px; padding: 6px 12px;
+  font-size: 11px; color: rgba(255,255,255,0.75); letter-spacing: 0.3px;
+}
+.pill-check {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: rgba(196,154,60,0.25); border: 1px solid rgba(196,154,60,0.5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; color: var(--gold-l); flex-shrink: 0;
+}
+
+.c1-bottom {
+  margin-top: auto; position: relative; z-index: 1;
+  display: flex; align-items: flex-end; justify-content: space-between;
+}
+.c1-cta {
+  background: var(--gold); color: var(--navy-2);
+  font-size: 12px; font-weight: 900; padding: 11px 20px;
+  letter-spacing: 0.5px;
+}
+.c1-url {
+  font-size: 11px; color: rgba(255,255,255,0.35);
+  letter-spacing: 0.5px; text-align: right; line-height: 1.6;
+}
+.c1-url b { color: rgba(255,255,255,0.6); display: block; }
+
+/* 오른쪽 알림 카드 미리보기 */
+.c1-preview {
+  position: absolute; right: 32px; top: 50%;
+  transform: translateY(-50%);
+  width: 186px;
+  background: var(--white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 4px 10px rgba(0,0,0,0.25);
+  z-index: 2;
+}
+.cp-head {
+  background: var(--off);
+  padding: 9px 12px;
+  display: flex; align-items: center; gap: 7px;
+  border-bottom: 1px solid var(--rule);
+}
+.cp-ava {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--navy); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.cp-ava svg { width: 12px; height: 12px; fill: white; }
+.cp-name { font-size: 11px; font-weight: 700; color: var(--text); }
+.cp-body { padding: 11px 12px; background: #eef2f7; }
+.cp-bubble {
+  background: var(--white);
+  border-radius: 3px 8px 8px 8px;
+  padding: 10px 11px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+.cp-noti {
+  font-size: 9px; font-weight: 700; color: #2563a8;
+  border-bottom: 1px solid var(--rule); padding-bottom: 6px; margin-bottom: 7px;
+  letter-spacing: 0.3px;
+}
+.cp-ttl { font-size: 10px; font-weight: 700; color: var(--text); line-height: 1.45; margin-bottom: 7px; word-break: keep-all; }
+.cp-row { display: grid; grid-template-columns: 38px 1fr; gap: 2px; margin-bottom: 2px; }
+.cp-lbl { font-size: 8.5px; color: #7a8499; font-weight: 500; }
+.cp-val { font-size: 8.5px; color: var(--text); }
+.cp-val.kw { color: #2563a8; font-weight: 700; }
+.cp-val.red { color: #c0392b; font-weight: 600; }
+.cp-link { font-size: 8px; color: #2563a8; margin-top: 7px; padding-top: 6px; border-top: 1px solid var(--rule); }
+
+/* ════════════════════════════════════════
+   카드 2 — 문제 제기 (크림 밝은 톤)
+════════════════════════════════════════ */
+#card2 {
+  background: var(--off);
+  display: flex; flex-direction: column;
+  padding: 44px 48px;
+}
+.c2-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 32px;
+}
+.c2-logo-box {
+  background: var(--navy);
+  color: var(--white);
+  font-size: 13px; font-weight: 900;
+  padding: 4px 11px; letter-spacing: 1px;
+}
+.c2-num {
+  font-family: var(--serif);
+  font-size: 11px; color: rgba(26,45,79,0.3); letter-spacing: 1px;
+}
+
+.c2-eyebrow {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--navy); margin-bottom: 10px;
+  font-weight: 700;
+}
+.c2-title {
+  font-family: var(--serif);
+  font-size: 30px; font-weight: 900;
+  line-height: 1.3; color: var(--text);
+  margin-bottom: 28px; letter-spacing: -0.5px; word-break: keep-all;
+}
+.c2-title .hl { color: var(--navy); border-bottom: 3px solid var(--gold); }
+
+.c2-items { display: flex; flex-direction: column; gap: 0; flex: 1; }
+.c2-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 14px 0; border-bottom: 1px solid var(--rule);
+}
+.c2-item:last-child { border-bottom: none; }
+.c2-icon-wrap {
+  width: 38px; height: 38px; border-radius: 8px;
+  background: var(--white); border: 1px solid var(--rule);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 18px;
+}
+.c2-item-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; word-break: keep-all; }
+.c2-item-body { font-size: 11.5px; color: var(--mid); line-height: 1.65; word-break: keep-all; }
+
+.c2-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 20px; padding-top: 16px; border-top: 2px solid var(--navy);
+}
+.c2-sol {
+  font-size: 13px; font-weight: 700; color: var(--navy);
+  display: flex; align-items: center; gap: 8px;
+}
+.c2-sol::before { content:'→'; font-size: 16px; color: var(--gold); }
+.c2-url { font-size: 10px; color: rgba(26,45,79,0.4); letter-spacing: 0.5px; }
+
+/* ════════════════════════════════════════
+   카드 3 — 사용법 + CTA (화이트 클린)
+════════════════════════════════════════ */
+#card3 {
+  background: var(--white);
+  display: flex; flex-direction: column;
+  padding: 44px 48px 40px;
+  border: 1px solid var(--rule);
+}
+.c3-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 30px;
+}
+.c3-logo {
+  display: flex; align-items: center; gap: 8px;
+}
+.c3-logo-box {
+  background: var(--navy);
+  color: var(--white);
+  font-size: 13px; font-weight: 900;
+  padding: 4px 11px; letter-spacing: 1px;
+}
+.c3-tag {
+  background: rgba(196,154,60,0.12);
+  border: 1px solid rgba(196,154,60,0.4);
+  color: var(--gold-d);
+  font-size: 10px; font-weight: 700; padding: 3px 10px;
+  letter-spacing: 1px;
+}
+.c3-num { font-family: var(--serif); font-size: 11px; color: rgba(26,45,79,0.3); letter-spacing: 1px; }
+
+.c3-title {
+  font-family: var(--serif);
+  font-size: 28px; font-weight: 900;
+  line-height: 1.3; color: var(--text);
+  margin-bottom: 6px; letter-spacing: -0.5px; word-break: keep-all;
+}
+.c3-sub {
+  font-size: 12px; color: var(--mid);
+  margin-bottom: 24px; line-height: 1.6; word-break: keep-all;
+}
+
+.c3-steps { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.c3-step {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 12px 16px;
+  background: var(--off); border-radius: 8px;
+  border-left: 3px solid var(--navy);
+}
+.c3-step-n {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--navy); color: var(--white);
+  font-size: 13px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.c3-step-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.c3-step-body { font-size: 11px; color: var(--mid); line-height: 1.6; word-break: keep-all; }
+.c3-step-code {
+  margin-top: 5px; padding: 5px 10px;
+  background: var(--navy-2); border-radius: 4px;
+  font-size: 11px; color: var(--gold-l);
+  font-family: 'Courier New', monospace;
+  display: inline-block;
+}
+
+.c3-bottom {
+  margin-top: 20px;
+  background: var(--navy);
+  border-radius: 8px; padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.c3-cta-text {
+  font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.6; word-break: keep-all;
+}
+.c3-cta-text b { color: var(--white); display: block; font-size: 14px; margin-bottom: 2px; }
+.c3-cta-btn {
+  background: var(--gold); color: var(--navy-2);
+  font-size: 12px; font-weight: 900; padding: 10px 16px;
+  letter-spacing: 0.5px; white-space: nowrap; border-radius: 4px;
+}
+</style>
+</head>
+<body>
+
+<div class="guide">
+  <b>홍보 이미지 3장</b> — 각 카드를 캡처하거나 아래 버튼으로 저장하세요<br>
+  캡처 범위: 카드 테두리 안쪽 (540×540px = SNS 1:1 비율)
+</div>
+
+<div class="dl-row">
+  <button class="dl-btn primary" onclick="dlAll()">전체 3장 저장</button>
+  <button class="dl-btn" onclick="dl('card1')">1장만 저장</button>
+  <button class="dl-btn" onclick="dl('card2')">2장만 저장</button>
+  <button class="dl-btn" onclick="dl('card3')">3장만 저장</button>
+</div>
+
+<!-- ═══════════════ 카드 1 ═══════════════ -->
+<div class="card-section">
+  <div class="card-label">카드 1 / 3 — 서비스 소개</div>
+  <div class="card" id="card1">
+    <div class="c1-top">
+      <div class="c1-logo">
+        <div class="c1-logo-box">BIDSCAN</div>
+        <div class="c1-logo-sub">나라장터 입찰공고<br>자동 알림 서비스</div>
+      </div>
+      <div class="c1-live"><span class="live-dot"></span>운영 중</div>
+    </div>
+
+    <div class="c1-eyebrow">나라장터 입찰 자동화</div>
+
+    <div class="c1-title" style="max-width:280px;">
+      입찰공고,<br>
+      이제 <span class="hl">자동으로</span><br>
+      받으세요
+    </div>
+
+    <div class="c1-desc">
+      키워드 한 번 등록하면 끝.<br>
+      조건에 맞는 공고가 올라오는 즉시<br>
+      텔레그램으로 알림이 전송됩니다.
+    </div>
+
+    <div class="c1-pills">
+      <div class="pill"><div class="pill-check">✓</div>30분마다 자동 수집</div>
+      <div class="pill"><div class="pill-check">✓</div>분야 제한 없음</div>
+      <div class="pill"><div class="pill-check">✓</div>무료로 시작</div>
+    </div>
+
+    <div class="c1-bottom">
+      <div>
+        <div class="c1-cta">텔레그램에서 무료 시작</div>
+      </div>
+      <div class="c1-url">
+        <b>t.me/bidscanjh_bot</b>
+        구독 문의도 환영합니다
+      </div>
+    </div>
+
+    <!-- 오른쪽 알림 카드 미리보기 -->
+    <div class="c1-preview">
+      <div class="cp-head">
+        <div class="cp-ava">
+          <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+        </div>
+        <div class="cp-name">BidScan 알림</div>
+      </div>
+      <div class="cp-body">
+        <div class="cp-bubble">
+          <div class="cp-noti">새 입찰공고 알림</div>
+          <div class="cp-ttl">재단법인 4·16재단 업무용차량 임차 용역</div>
+          <div class="cp-row"><span class="cp-lbl">발주기관</span><span class="cp-val">재단법인 416재단</span></div>
+          <div class="cp-row"><span class="cp-lbl">추정가격</span><span class="cp-val">5,454만원</span></div>
+          <div class="cp-row"><span class="cp-lbl">입찰마감</span><span class="cp-val red">D-7</span></div>
+          <div class="cp-row"><span class="cp-lbl">매칭키워드</span><span class="cp-val kw">차량</span></div>
+          <div class="cp-link">▶ 나라장터 원문 보기</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-actions">
+    <button class="card-dl" onclick="dl('card1')">이미지 저장</button>
+  </div>
+</div>
+
+<!-- ═══════════════ 카드 2 ═══════════════ -->
+<div class="card-section">
+  <div class="card-label">카드 2 / 3 — 문제 제기</div>
+  <div class="card" id="card2">
+    <div class="c2-top">
+      <div class="c2-logo-box">BIDSCAN</div>
+      <div class="c2-num">02 / 03</div>
+    </div>
+
+    <div class="c2-eyebrow">이런 불편함이 있으셨나요?</div>
+    <div class="c2-title">
+      매일 나라장터를<br>
+      <span class="hl">직접 확인</span>하고 계신다면
+    </div>
+
+    <div class="c2-items">
+      <div class="c2-item">
+        <div class="c2-icon-wrap">📋</div>
+        <div>
+          <div class="c2-item-title">하루 1,200건 이상의 공고가 올라옵니다</div>
+          <div class="c2-item-body">수동으로 전체를 확인하는 건 사실상 불가능합니다.</div>
+        </div>
+      </div>
+      <div class="c2-item">
+        <div class="c2-icon-wrap">⏰</div>
+        <div>
+          <div class="c2-item-title">좋은 공고를 놓치거나 뒤늦게 발견합니다</div>
+          <div class="c2-item-body">마감이 지나거나, 경쟁사가 먼저 발견하는 경우가 생깁니다.</div>
+        </div>
+      </div>
+      <div class="c2-item">
+        <div class="c2-icon-wrap">🔔</div>
+        <div>
+          <div class="c2-item-title">나라장터에는 자동 알림 기능이 없습니다</div>
+          <div class="c2-item-body">직접 접속해서 검색하지 않으면 새 공고를 알 수 없습니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="c2-bottom">
+      <div class="c2-sol">BidScan이 대신 지켜드립니다</div>
+      <div class="c2-url">t.me/bidscanjh_bot</div>
+    </div>
+  </div>
+  <div class="card-actions">
+    <button class="card-dl" onclick="dl('card2')">이미지 저장</button>
+  </div>
+</div>
+
+<!-- ═══════════════ 카드 3 ═══════════════ -->
+<div class="card-section">
+  <div class="card-label">카드 3 / 3 — 사용법 + CTA</div>
+  <div class="card" id="card3">
+    <div class="c3-top">
+      <div class="c3-logo">
+        <div class="c3-logo-box">BIDSCAN</div>
+        <div class="c3-tag">사용방법</div>
+      </div>
+      <div class="c3-num">03 / 03</div>
+    </div>
+
+    <div class="c3-title">3단계로 바로<br>시작하실 수 있습니다</div>
+    <div class="c3-sub">복잡한 설치나 회원가입 없이, 텔레그램에서 바로 사용하세요.</div>
+
+    <div class="c3-steps">
+      <div class="c3-step">
+        <div class="c3-step-n">1</div>
+        <div>
+          <div class="c3-step-title">텔레그램 봇 접속 후 시작</div>
+          <div class="c3-step-body">아래 주소로 접속하거나 검색 후 /start 입력</div>
+          <div class="c3-step-code">t.me/bidscanjh_bot</div>
+        </div>
+      </div>
+      <div class="c3-step">
+        <div class="c3-step-n">2</div>
+        <div>
+          <div class="c3-step-title">키워드 등록</div>
+          <div class="c3-step-body">찾고 싶은 공고 핵심 단어 입력 (분야 제한 없음)</div>
+          <div class="c3-step-code">/addkeyword 소프트웨어&nbsp;&nbsp;/addkeyword -단순노무</div>
+        </div>
+      </div>
+      <div class="c3-step">
+        <div class="c3-step-n">3</div>
+        <div>
+          <div class="c3-step-title">알림 수신</div>
+          <div class="c3-step-body">30분마다 자동 수집 → 조건 맞는 공고 즉시 텔레그램 발송</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="c3-bottom">
+      <div class="c3-cta-text">
+        <b>지금 바로 무료로 시작하세요</b>
+        유료 플랜 구독 문의도 환영합니다
+      </div>
+      <div class="c3-cta-btn">무료 시작 →</div>
+    </div>
+  </div>
+  <div class="card-actions">
+    <button class="card-dl" onclick="dl('card3')">이미지 저장</button>
+  </div>
+</div>
+
+<!-- html2canvas CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+async function dl(id) {
+  const el = document.getElementById(id);
+  const labels = { card1:'BidScan_01_서비스소개', card2:'BidScan_02_문제제기', card3:'BidScan_03_사용방법' };
+
+  // 저장 중 표시
+  const btns = document.querySelectorAll('.card-dl, .dl-btn');
+  btns.forEach(b => b.disabled = true);
+
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 2,           // 2x → 실질적으로 1080px
+      useCORS: true,
+      backgroundColor: null,
+      logging: false,
+      width: el.offsetWidth,
+      height: el.offsetHeight,
+    });
+
+    const link = document.createElement('a');
+    link.download = labels[id] + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch(e) {
+    alert('저장 중 오류가 발생했습니다. 직접 캡처해 주세요.');
+  } finally {
+    btns.forEach(b => b.disabled = false);
+  }
+}
+
+async function dlAll() {
+  for (const id of ['card1','card2','card3']) {
+    await dl(id);
+    await new Promise(r => setTimeout(r, 600));
+  }
+}
+</script>
+</body>
+</html>
